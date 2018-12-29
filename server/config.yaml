@@ -1,0 +1,7 @@
+brokers:
+  - "localhost:9092"
+  - "localhost:9094"
+  - "localhost:9096"
+kafka_tasks: "tasks"
+kafka_results: "results"
+log_level: "debug"
