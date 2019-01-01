@@ -126,7 +126,7 @@ func main() {
 	kafkaBroker0 := kafkaBrokers[0]
 	conn, err := kafka.Dial("tcp", kafkaBroker0)
 	if err != nil {
-		logrus.Fatal("E0", err)
+		logrus.Fatal(err)
 	}
 	defer func() {
 		if err := conn.Close(); err != nil {
@@ -134,11 +134,9 @@ func main() {
 		}
 	}()
 
-	fmt.Println(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>INIT BEG")
 	if err := initialize(conn, kafkaTasks, kafkaResults); err != nil {
-		logrus.Fatal("E1", err)
+		logrus.Fatal(err)
 	}
-	fmt.Println(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>INIT END")
 
 	kafkaResultsWriter := kafka.NewWriter(kafka.WriterConfig{
 		Brokers:  kafkaBrokers,

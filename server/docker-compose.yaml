@@ -19,7 +19,7 @@ services:
     expose:
       - "9091"
     environment:
-      KAFKA_ADVERTISED_LISTENERS: INSIDE://kafka1:9091,OUTSIDE://localhost:9092
+      KAFKA_ADVERTISED_LISTENERS: INSIDE://kafka1:9091,OUTSIDE://kafka1:9092
       KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: INSIDE:PLAINTEXT,OUTSIDE:PLAINTEXT
       KAFKA_LISTENERS: INSIDE://0.0.0.0:9091,OUTSIDE://0.0.0.0:9092
       KAFKA_ZOOKEEPER_CONNECT: zoo1:2181
@@ -35,53 +35,53 @@ services:
     volumes:
       - "./kafka-logs-1:/kafka/kafka-logs-1"
 
-#  kafka2:
-#    image: wurstmeister/kafka
-#    hostname: kafka2
-#    ports:
-#      - "9093:9093"
-#    expose:
-#      - "9091"
-#    environment:
-#      KAFKA_ADVERTISED_LISTENERS: INSIDE://kafka2:9091,OUTSIDE://localhost:9093
-#      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: INSIDE:PLAINTEXT,OUTSIDE:PLAINTEXT
-#      KAFKA_LISTENERS: INSIDE://0.0.0.0:9091,OUTSIDE://0.0.0.0:9093
-#      KAFKA_ZOOKEEPER_CONNECT: zoo1:2181
-#      KAFKA_INTER_BROKER_LISTENER_NAME: INSIDE
+  kafka2:
+    image: wurstmeister/kafka
+    hostname: kafka2
+    ports:
+      - "9093:9093"
+    expose:
+      - "9091"
+    environment:
+      KAFKA_ADVERTISED_LISTENERS: INSIDE://kafka2:9091,OUTSIDE://kafka2:9093
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: INSIDE:PLAINTEXT,OUTSIDE:PLAINTEXT
+      KAFKA_LISTENERS: INSIDE://0.0.0.0:9091,OUTSIDE://0.0.0.0:9093
+      KAFKA_ZOOKEEPER_CONNECT: zoo1:2181
+      KAFKA_INTER_BROKER_LISTENER_NAME: INSIDE
 #      KAFKA_DEFAULT_REPLICATION_FACTOR: ${REPLICATION_FACTOR}
 #      KAFKA_NUM_PARTITIONS: ${NUM_PARTITIONS}
-#      KAFKA_BROKER_ID: 2
-#      KAFKA_LOG_DIRS: /kafka/kafka-logs-2
-#      KAFKA_AUTO_OFFSET_RESET: latest
-#      TOPIC_AUTO_CREATE: "true"
-#    depends_on:
-#      - zoo1
-#    volumes:
-#      - "./kafka-logs-2:/kafka/kafka-logs-2"
-#
-#  kafka3:
-#    image: wurstmeister/kafka
-#    hostname: kafka3
-#    ports:
-#      - "9094:9094"
-#    expose:
-#      - "9091"
-#    environment:
-#      KAFKA_ADVERTISED_LISTENERS: INSIDE://kafka3:9091,OUTSIDE://localhost:9094
-#      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: INSIDE:PLAINTEXT,OUTSIDE:PLAINTEXT
-#      KAFKA_LISTENERS: INSIDE://0.0.0.0:9091,OUTSIDE://0.0.0.0:9094
-#      KAFKA_ZOOKEEPER_CONNECT: zoo1:2181
-#      KAFKA_INTER_BROKER_LISTENER_NAME: INSIDE
+      KAFKA_BROKER_ID: 2
+      KAFKA_LOG_DIRS: /kafka/kafka-logs-2
+      KAFKA_AUTO_OFFSET_RESET: latest
+      TOPIC_AUTO_CREATE: "true"
+    depends_on:
+      - zoo1
+    volumes:
+      - "./kafka-logs-2:/kafka/kafka-logs-2"
+
+  kafka3:
+    image: wurstmeister/kafka
+    hostname: kafka3
+    ports:
+      - "9094:9094"
+    expose:
+      - "9091"
+    environment:
+      KAFKA_ADVERTISED_LISTENERS: INSIDE://kafka3:9091,OUTSIDE://kafka3:9094
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: INSIDE:PLAINTEXT,OUTSIDE:PLAINTEXT
+      KAFKA_LISTENERS: INSIDE://0.0.0.0:9091,OUTSIDE://0.0.0.0:9094
+      KAFKA_ZOOKEEPER_CONNECT: zoo1:2181
+      KAFKA_INTER_BROKER_LISTENER_NAME: INSIDE
 #      KAFKA_DEFAULT_REPLICATION_FACTOR: ${REPLICATION_FACTOR}
 #      KAFKA_NUM_PARTITIONS: ${NUM_PARTITIONS}
-#      KAFKA_BROKER_ID: 3
-#      KAFKA_LOG_DIRS: /kafka/kafka-logs-3
-#      KAFKA_AUTO_OFFSET_RESET: latest
-#      TOPIC_AUTO_CREATE: "true"
-#    depends_on:
-#      - zoo1
-#    volumes:
-#      - "./kafka-logs-3:/kafka/kafka-logs-3"
+      KAFKA_BROKER_ID: 3
+      KAFKA_LOG_DIRS: /kafka/kafka-logs-3
+      KAFKA_AUTO_OFFSET_RESET: latest
+      TOPIC_AUTO_CREATE: "true"
+    depends_on:
+      - zoo1
+    volumes:
+      - "./kafka-logs-3:/kafka/kafka-logs-3"
 
   app:
     links:
