@@ -42,14 +42,15 @@ func create(conn *kafka.Conn, qIn, qOut string) error {
 	//    ReplicaAssignments []ReplicaAssignment
 	//    ConfigEntries      []ConfigEntry
 	return conn.CreateTopics(
-		kafka.TopicConfig{Topic: qIn, NumPartitions: 2},
-		kafka.TopicConfig{Topic: qOut, NumPartitions: 2},
+		kafka.TopicConfig{Topic: qIn},
+		kafka.TopicConfig{Topic: qOut},
 	)
 }
 
 func initialize(conn *kafka.Conn, qIn, qOut string) error {
 	cleanup(conn, qIn, qOut)
-	return create(conn, qIn, qOut)
+	//return create(conn, qIn, qOut)
+	return nil
 }
 
 // evaluate calculates the formula for the given val
