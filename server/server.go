@@ -29,8 +29,10 @@ func configure() error {
 	return nil
 }
 
-func cleanup(conn *kafka.Conn, qIn, qOut string) error {
-	return conn.DeleteTopics(qOut, qIn)
+func cleanup(conn *kafka.Conn, qIn, qOut string) {
+	if err := conn.DeleteTopics(qOut, qIn); err != nil {
+		logrus.Errorf("failed to DeleteTopics(): %v", err)
+	}
 }
 
 func create(conn *kafka.Conn, qIn, qOut string) error {
@@ -40,16 +42,13 @@ func create(conn *kafka.Conn, qIn, qOut string) error {
 	//    ReplicaAssignments []ReplicaAssignment
 	//    ConfigEntries      []ConfigEntry
 	return conn.CreateTopics(
-		kafka.TopicConfig{Topic: qIn},
-		kafka.TopicConfig{Topic: qOut},
+		kafka.TopicConfig{Topic: qIn, NumPartitions: 2},
+		kafka.TopicConfig{Topic: qOut, NumPartitions: 2},
 	)
 }
 
 func initialize(conn *kafka.Conn, qIn, qOut string) error {
-	if err := cleanup(conn, qIn, qOut); err != nil {
-		return err
-	}
-
+	cleanup(conn, qIn, qOut)
 	return create(conn, qIn, qOut)
 }
 
@@ -104,8 +103,8 @@ func startPerformTasks(resultsWriter *kafka.Writer, tasksReader *kafka.Reader) {
 		logrus.Debugf("Publishing result... %q gives %q", string(msg.Value), string(resultJSON))
 		if err := resultsWriter.WriteMessages(context.Background(),
 			kafka.Message{
-				Key: uuid.NewV1().Bytes(),
-				Value:resultJSON,
+				Key:   uuid.NewV1().Bytes(),
+				Value: resultJSON,
 			}); err != nil {
 			logrus.Errorf("failed to WriteMessages: %v", err)
 			continue
@@ -126,7 +125,7 @@ func main() {
 	kafkaBroker0 := kafkaBrokers[0]
 	conn, err := kafka.Dial("tcp", kafkaBroker0)
 	if err != nil {
-		logrus.Fatal(err)
+		logrus.Fatal("E0", err)
 	}
 	defer func() {
 		if err := conn.Close(); err != nil {
@@ -134,24 +133,24 @@ func main() {
 		}
 	}()
 
+	fmt.Println(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>INIT BEG")
+	if err := initialize(conn, kafkaTasks, kafkaResults); err != nil {
+		logrus.Fatal("E1", err)
+	}
+	fmt.Println(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>INIT END")
+
 	kafkaResultsWriter := kafka.NewWriter(kafka.WriterConfig{
-		Brokers:kafkaBrokers,
-		Topic: kafkaResults,
-		Balancer:&kafka.LeastBytes{},
+		Brokers:  kafkaBrokers,
+		Topic:    kafkaResults,
+		Balancer: &kafka.LeastBytes{},
 	})
 	kafkaResultsReader := kafka.NewReader(kafka.ReaderConfig{
 		Brokers:        kafkaBrokers,
 		Topic:          kafkaTasks,
-		MinBytes:       10e3, // 10KB
-		MaxBytes:       10e6, // 10MB
+		MinBytes:       10e3,        // 10KB
+		MaxBytes:       10e6,        // 10MB
 		CommitInterval: time.Second, // flushes commits to Kafka every second
 	})
-
-
-
-	if err := initialize(conn, kafkaTasks, kafkaResults); err != nil {
-		logrus.Fatal(err)
-	}
 
 	startPerformTasks(kafkaResultsWriter, kafkaResultsReader)
 }
