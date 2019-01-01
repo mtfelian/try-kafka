@@ -143,13 +143,17 @@ func main() {
 		Topic:    kafkaResults,
 		Balancer: &kafka.LeastBytes{},
 	})
-	kafkaResultsReader := kafka.NewReader(kafka.ReaderConfig{
+	kafkaTasksReader := kafka.NewReader(kafka.ReaderConfig{
 		Brokers:        kafkaBrokers,
 		Topic:          kafkaTasks,
 		MinBytes:       10e3,        // 10KB
 		MaxBytes:       10e6,        // 10MB
 		CommitInterval: time.Second, // flushes commits to Kafka every second
 	})
+	defer func() {
+		logrus.Infof("closing kafkaResultsWriter: %v", kafkaResultsWriter.Close())
+		logrus.Infof("closing kafkaResultsReader: %v", kafkaTasksReader.Close())
+	}()
 
-	startPerformTasks(kafkaResultsWriter, kafkaResultsReader)
+	startPerformTasks(kafkaResultsWriter, kafkaTasksReader)
 }
