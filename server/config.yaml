@@ -1,7 +1,7 @@
 brokers:
-  - "kafka1:9092"
-  - "kafka2:9094"
-  - "kafka3:9096"
+  - "kafka1:9091"
+  - "kafka2:9091"
+  - "kafka3:9091"
 kafka_tasks: "tasks"
 kafka_results: "results"
 log_level: "debug"
