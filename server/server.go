@@ -44,7 +44,10 @@ func create(conn *kafka.Conn, qIn, qOut string) error {
 
 func initialize(conn *kafka.Conn, qIn, qOut string) error {
 	cleanup(conn, qIn, qOut)
-	return create(conn, qIn, qOut)
+	if err := create(conn, qIn, qOut); err != nil {
+		logrus.Errorf("failed to create(): %v", err)
+	}
+	return nil
 }
 
 // evaluate calculates the formula for the given val
