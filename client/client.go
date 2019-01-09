@@ -71,9 +71,10 @@ func main() {
 	kafkaResultsReader := kafka.NewReader(kafka.ReaderConfig{
 		Brokers:        kafkaBrokers,
 		Topic:          kafkaResults,
-		MinBytes:       10e3,        // 10KB
-		MaxBytes:       10e6,        // 10MB
-		CommitInterval: time.Second, // flushes commits to Kafka every second
+		MinBytes:       10e3,
+		MaxWait:        500 * time.Millisecond,
+		MaxBytes:       10e6,
+		CommitInterval: time.Second,
 	})
 
 	go startPrintingResults(kafkaResultsReader)

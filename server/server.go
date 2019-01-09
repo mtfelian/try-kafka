@@ -36,11 +36,6 @@ func cleanup(conn *kafka.Conn, qIn, qOut string) {
 }
 
 func create(conn *kafka.Conn, qIn, qOut string) error {
-	//  Topic              string
-	//    NumPartitions      int
-	//    ReplicationFactor  int
-	//    ReplicaAssignments []ReplicaAssignment
-	//    ConfigEntries      []ConfigEntry
 	return conn.CreateTopics(
 		kafka.TopicConfig{Topic: qIn},
 		kafka.TopicConfig{Topic: qOut},
@@ -49,8 +44,7 @@ func create(conn *kafka.Conn, qIn, qOut string) error {
 
 func initialize(conn *kafka.Conn, qIn, qOut string) error {
 	cleanup(conn, qIn, qOut)
-	//return create(conn, qIn, qOut)
-	return nil
+	return create(conn, qIn, qOut)
 }
 
 // evaluate calculates the formula for the given val
@@ -147,9 +141,10 @@ func main() {
 	kafkaTasksReader := kafka.NewReader(kafka.ReaderConfig{
 		Brokers:        kafkaBrokers,
 		Topic:          kafkaTasks,
-		MinBytes:       10e3,        // 10KB
-		MaxBytes:       10e6,        // 10MB
-		CommitInterval: time.Second, // flushes commits to Kafka every second
+		MinBytes:       10e3,
+		MaxWait:        500 * time.Millisecond,
+		MaxBytes:       10e6,
+		CommitInterval: time.Second,
 	})
 	defer func() {
 		logrus.Infof("closing kafkaResultsWriter: %v", kafkaResultsWriter.Close())
