@@ -2,9 +2,9 @@
 
 This application was my "Kafka Hello World". 
 
-It initializes Kafka with 1 exchange and 2 queues: for tasks and for results. 
+It initializes local Kafka cluster with 2 topics: for tasks and for results. 
 
-The client side accepts a command from stdin and sends it to the tasks queue, concurrently listening for the results queue.
+The client side accepts a command from stdin and sends it to the tasks topic, concurrently listening for the results topics.
 
-Server side listens for the tasks queue, calculates expression (task is a simple arithmetical expression) and sends it to the results queue. 
+Server side listens for the tasks topic, calculates expression (task is a simple arithmetical expression) and sends it to the results topic. 
 
