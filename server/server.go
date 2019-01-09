@@ -139,9 +139,10 @@ func main() {
 	}
 
 	kafkaResultsWriter := kafka.NewWriter(kafka.WriterConfig{
-		Brokers:  kafkaBrokers,
-		Topic:    kafkaResults,
-		Balancer: &kafka.LeastBytes{},
+		Brokers:      kafkaBrokers,
+		Topic:        kafkaResults,
+		Balancer:     &kafka.LeastBytes{},
+		RequiredAcks: 1,
 	})
 	kafkaTasksReader := kafka.NewReader(kafka.ReaderConfig{
 		Brokers:        kafkaBrokers,

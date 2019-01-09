@@ -63,9 +63,10 @@ func main() {
 	kafkaResults := viper.GetString("kafka_results")
 
 	kafkaTasksWriter := kafka.NewWriter(kafka.WriterConfig{
-		Brokers:  kafkaBrokers,
-		Topic:    kafkaTasks,
-		Balancer: &kafka.LeastBytes{},
+		Brokers:      kafkaBrokers,
+		Topic:        kafkaTasks,
+		Balancer:     &kafka.LeastBytes{},
+		RequiredAcks: 1,
 	})
 	kafkaResultsReader := kafka.NewReader(kafka.ReaderConfig{
 		Brokers:        kafkaBrokers,
