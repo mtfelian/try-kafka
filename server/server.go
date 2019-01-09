@@ -142,6 +142,7 @@ func main() {
 		RequiredAcks: 1,
 	})
 	kafkaTasksReader := kafka.NewReader(kafka.ReaderConfig{
+		GroupID:        "tasksReader",
 		Brokers:        kafkaBrokers,
 		Topic:          kafkaTasks,
 		MinBytes:       10e3,

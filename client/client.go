@@ -69,6 +69,7 @@ func main() {
 		RequiredAcks: 1,
 	})
 	kafkaResultsReader := kafka.NewReader(kafka.ReaderConfig{
+		GroupID:        "resultsReader",
 		Brokers:        kafkaBrokers,
 		Topic:          kafkaResults,
 		MinBytes:       10e3,
